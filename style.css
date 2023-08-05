@@ -88,10 +88,12 @@ button:hover {
 }
 
 #round-score-container {
+  display: flex;
   margin: 25px;
 }
 
 #round-score {
+  margin-left: 8px;
   font-weight: bold;
   color: #3498db;
 }
