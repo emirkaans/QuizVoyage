@@ -41,9 +41,9 @@ function showQuestion() {
       ...questions[currentQuestion].incorrect_answers,
       questions[currentQuestion].correct_answer,
     ];
-    const shuffledChoices = shuffleArray(choices);
 
-    createChoices(shuffledChoices);
+    shuffleArray(choices);
+    createChoices(choices);
   } else {
     showResult();
   }
