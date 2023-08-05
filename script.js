@@ -31,9 +31,6 @@ async function fetchQuestions() {
 
 function renderSpinner() {
   spinnerElement.classList.add("loader-hidden");
-  spinnerElement.addEventListener("transitionend", () => {
-    document.body.removeChild("loader");
-  });
 }
 
 function renderQuestion() {
