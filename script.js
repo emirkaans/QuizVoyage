@@ -6,6 +6,7 @@ const questionElement = document.getElementById("question");
 const choicesElement = document.getElementById("choices");
 const roundScoreElement = document.getElementById("round-score");
 const lastScoreElement = document.getElementById("last-score");
+const spinnerElement = document.querySelector(".loader");
 
 // Conditions
 let currentQuestion = 0;
@@ -21,13 +22,21 @@ async function fetchQuestions() {
     const res = await fetch(APIUrl);
     const data = await res.json();
     questions = data.results;
-    showQuestion();
+    renderSpinner();
+    renderQuestion();
   } catch (error) {
     console.error("Error fetching questions:", error);
   }
 }
 
-function showQuestion() {
+function renderSpinner() {
+  spinnerElement.classList.add("loader-hidden");
+  spinnerElement.addEventListener("transitionend", () => {
+    document.body.removeChild("loader");
+  });
+}
+
+function renderQuestion() {
   if (currentQuestion < questions.length) {
     const formattedQuestion = removeCharacters(
       questions[currentQuestion].question
@@ -43,13 +52,13 @@ function showQuestion() {
     ];
 
     shuffleArray(choices);
-    createChoices(choices);
+    renderChoices(choices);
   } else {
-    showResult();
+    renderResult();
   }
 }
 
-function createChoices(choices) {
+function renderChoices(choices) {
   choices.forEach((choice) => {
     const choiceButton = document.createElement("button");
     choiceButton.textContent = choice;
@@ -70,7 +79,7 @@ function checkAnswer(isCorrect, question, answer) {
   currentQuestion++;
 
   saveQuestion(question, answer);
-  showQuestion();
+  renderQuestion();
 }
 
 function saveQuestion(question, answer) {
@@ -84,13 +93,13 @@ function saveQuestion(question, answer) {
   localStorage.setItem(`question${currentQuestion}`, questionObj_serialized);
 }
 
-function showResult() {
+function renderResult() {
   questionContainer.style.display = "none";
   resultContainer.style.display = "block";
   roundScoreElement.textContent = roundScore + "/100";
 }
 
-function showLastScore() {
+function renderLastScore() {
   lastScoreElement.textContent = lastScore;
 }
 
@@ -113,23 +122,12 @@ function shuffleArray(arr) {
   return arr;
 }
 
-// Loader 
-window.addEventListener("load", () => {
-  const loader = document.querySelector(".loader");
-
-  loader.classList.add("loader-hidden");
-
-  loader.addEventListener("transitionend", () => {
-    document.body.removeChild("loader");
-  });
-});
-
 // DOM Content Loaded - JavaScript
 document.addEventListener("DOMContentLoaded", function () {
   lastScore = localStorage.getItem("lastScore")
     ? parseInt(localStorage.getItem("lastScore"))
     : "";
-  showLastScore();
+  renderLastScore();
   fetchQuestions();
 });
 
@@ -139,6 +137,6 @@ document.addEventListener("DOMContentLoaded", function () {
 //   lastScore = localStorage.getItem("lastScore")
 //     ? parseInt(localStorage.getItem("lastScore"))
 //     : 0;
-//   showLastScore();
+//   renderLastScore();
 //   fetchQuestions();
 // });
