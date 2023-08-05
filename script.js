@@ -41,7 +41,7 @@ function showQuestion() {
       ...questions[currentQuestion].incorrect_answers,
       questions[currentQuestion].correct_answer,
     ];
-    
+
     shuffleArray(choices);
     createChoices(choices);
   } else {
@@ -112,6 +112,17 @@ function shuffleArray(arr) {
   }
   return arr;
 }
+
+// Loader
+window.addEventListener("load", () => {
+  const loader = document.querySelector(".loader");
+
+  loader.classList.add("loader-hidden");
+
+  loader.addEventListener("transitionend", () => {
+    document.body.removeChild("loader");
+  });
+});
 
 // DOM Content Loaded - JavaScript
 document.addEventListener("DOMContentLoaded", function () {
