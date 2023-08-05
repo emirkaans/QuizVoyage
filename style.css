@@ -39,6 +39,7 @@ body {
 #question-container {
   max-width: 600px;
   margin: 50px auto;
+  font-size: 18px;
   background-color: #fff;
   padding: 20px;
   border-radius: 8px;
@@ -48,6 +49,10 @@ body {
 #question,
 #choices {
   margin: 20px;
+}
+
+button {
+  font-size: 17px;
 }
 
 h1,
@@ -92,6 +97,10 @@ button:hover {
 }
 
 #last-score-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
   width: 300px;
   margin: 50px auto;
   color: #fff;
@@ -99,6 +108,10 @@ button:hover {
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+#last-score {
+  margin: 4px;
 }
 
 .loader {
