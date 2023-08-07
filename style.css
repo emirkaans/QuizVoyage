@@ -39,6 +39,7 @@ body {
 #question-container {
   max-width: 600px;
   margin: 50px auto;
+  font-size: 18px;
   background-color: #fff;
   padding: 20px;
   border-radius: 8px;
@@ -48,6 +49,10 @@ body {
 #question,
 #choices {
   margin: 20px;
+}
+
+button {
+  font-size: 17px;
 }
 
 h1,
@@ -72,33 +77,111 @@ button:hover {
   background-color: var(--tertiary);
 }
 
+/* Results */
 #result-container {
   display: none;
-  max-width: 400px;
-  margin: 50px auto;
+  max-width: 550px;
+  margin: 20px auto;
   background-color: #fff;
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
+#answers-container {
+  margin: 5px;
+  margin-top: 20px;
+  padding: 5px;
+  background-color: var(--primary);
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+#answer {
+  display: flex;
+  flex-direction: column;
+  margin: 20px;
+}
+
+#correct-answer {
+  color: rgb(0, 184, 0);
+}
+
+#wrong-answer {
+  color: rgb(187, 0, 0);
+}
+
 #round-score-container {
+  display: flex;
+  flex-direction: column;
   margin: 25px;
 }
 
 #round-score {
+  margin-left: 8px;
   font-weight: bold;
   color: #3498db;
 }
 
 #last-score-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
   width: 300px;
-  margin: 50px auto;
+  margin: 20px auto;
   color: #fff;
   background-color: var(--tertiary);
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+#last-score {
+  margin: 4px;
+}
+
+#btn-try-again {
+  max-width: 250px;
+  margin: 10px auto;
+}
+
+/* Spinner */
+.loader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--primary);
+  transition: opacity 0.75s, visibility 0.75s;
+}
+
+.loader-hidden {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.loader::after {
+  content: "";
+  width: 75px;
+  height: 75px;
+  border: 15px solid var(--primary);
+  border-top-color: var(--secondary);
+  border-radius: 50%;
+  animation: loading 0.75s ease infinite;
+}
+
+@keyframes loading {
+  from {
+    transform: rotate(0turn);
+  }
+  to {
+    transform: rotate(1turn);
+  }
 }
 
 @media (max-width: 480px) {

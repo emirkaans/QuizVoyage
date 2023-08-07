@@ -1,11 +1,15 @@
 // Containers & Elements
 const questionContainer = document.getElementById("question-container");
 const resultContainer = document.getElementById("result-container");
+const answersContainer = document.getElementById("answers-container");
+const lastScoreContainer = document.getElementById("last-score-container");
 
 const questionElement = document.getElementById("question");
 const choicesElement = document.getElementById("choices");
 const roundScoreElement = document.getElementById("round-score");
 const lastScoreElement = document.getElementById("last-score");
+const spinnerElement = document.querySelector(".loader");
+const btnTryAgain = document.getElementById("btn-try-again");
 
 // Conditions
 let currentQuestion = 0;
@@ -21,14 +25,25 @@ async function fetchQuestions() {
     const res = await fetch(APIUrl);
     const data = await res.json();
     questions = data.results;
-    showQuestion();
+    removeSpinner();
+    renderQuestion();
   } catch (error) {
     console.error("Error fetching questions:", error);
   }
 }
 
-function showQuestion() {
-  if (currentQuestion < questions.length) {
+function renderSpinner() {
+  spinnerElement.classList.remove("loader-hidden");
+}
+
+function removeSpinner() {
+  spinnerElement.classList.add("loader-hidden");
+}
+
+function renderQuestion() {
+  if (currentQuestion >= questions.length) {
+    renderResult();
+  } else {
     const formattedQuestion = removeCharacters(
       questions[currentQuestion].question
     );
@@ -42,21 +57,19 @@ function showQuestion() {
       questions[currentQuestion].correct_answer,
     ];
 
-    shuffleArray(choices);
-    createChoices(choices);
-  } else {
-    showResult();
+    // shuffleArray(choices);
+    renderChoices(choices);
   }
 }
 
-function createChoices(choices) {
+function renderChoices(choices) {
   choices.forEach((choice) => {
     const choiceButton = document.createElement("button");
     choiceButton.textContent = choice;
     const isCorrect = choice === questions[currentQuestion].correct_answer;
 
     choiceButton.addEventListener("click", () =>
-      checkAnswer(isCorrect, questions[currentQuestion].question, choice)
+      checkAnswer(isCorrect, questions[currentQuestion], choice)
     );
     choicesElement.appendChild(choiceButton);
   });
@@ -66,17 +79,16 @@ function checkAnswer(isCorrect, question, answer) {
   if (isCorrect) {
     roundScore += 10;
   }
-  localStorage.setItem("lastScore", roundScore);
   currentQuestion++;
 
   saveQuestion(question, answer);
-  showQuestion();
+  renderQuestion();
 }
 
 function saveQuestion(question, answer) {
   const questionObj = {
     question,
-    answer,
+    answer: removeCharacters(answer),
   };
 
   const questionObj_serialized = JSON.stringify(questionObj);
@@ -84,14 +96,92 @@ function saveQuestion(question, answer) {
   localStorage.setItem(`question${currentQuestion}`, questionObj_serialized);
 }
 
-function showResult() {
+function renderResult() {
+  // DOM
   questionContainer.style.display = "none";
   resultContainer.style.display = "block";
   roundScoreElement.textContent = roundScore + "/100";
+  btnTryAgain.style.display = "block";
+  lastScoreContainer.style.display = "none";
+
+  let answers = [];
+
+  // Getting answers from Local Storage
+  for (let i = 1; i <= questions.length; i++) {
+    answers.push(JSON.parse(localStorage.getItem(`question${i}`)));
+  }
+
+  renderAnswers(answers);
+
+  // Setting lastScore to Local Storage
+  localStorage.setItem("lastScore", roundScore);
 }
 
-function showLastScore() {
+function renderAnswers(answers) {
+  answers.forEach((answer, i) => {
+    answerElement = document.createElement("div");
+    answerElement.id = "answer";
+
+    // Conditional Rendering by Correctness
+    if (answer.answer === answer.question.correct_answer) {
+      const html = `
+      <span>
+        <b>${i + 1}.</b> ${removeCharacters(answer.question.question)}
+      </span>
+      <span> <b id="correct-answer"> ✅ ${answer.answer} </b> 
+      </span>
+      `;
+      answerElement.innerHTML = html;
+    }
+
+    if (answer.answer !== answer.question.correct_answer) {
+      const html = `
+      <span>
+        <b>${i + 1}.</b> ${removeCharacters(answer.question.question)}
+      </span>
+    <span>
+     <b id="wrong-answer"> ❌ ${
+       answer.answer
+     } </b>   / <b id="correct-answer"> ✅ ${answer.question.correct_answer} 
+        </b>  
+    </span>
+      `;
+
+      answerElement.innerHTML = html;
+    }
+
+    answersContainer.appendChild(answerElement);
+  });
+}
+
+function renderLastScore() {
   lastScoreElement.textContent = lastScore;
+}
+
+function init() {
+  renderSpinner();
+
+  // Reset Conditions
+  currentQuestion = 0;
+  roundScore = 0;
+  questions = [];
+
+  // Getting Last Score
+  lastScore = localStorage.getItem("lastScore")
+    ? parseInt(localStorage.getItem("lastScore"))
+    : "";
+
+  // Clear Previous Answers
+  answersContainer.innerHTML = "";
+
+  renderLastScore();
+  fetchQuestions();
+
+  // Reset DOM
+  btnTryAgain.style.display = "none";
+  questionContainer.style.display = "block";
+  resultContainer.style.display = "none";
+  lastScoreContainer.style.display = "block";
 }
 
 // Helper Functions
@@ -113,12 +203,16 @@ function shuffleArray(arr) {
   return arr;
 }
 
+// Event Listeners
+
+btnTryAgain.addEventListener("click", init);
+
 // DOM Content Loaded - JavaScript
 document.addEventListener("DOMContentLoaded", function () {
   lastScore = localStorage.getItem("lastScore")
     ? parseInt(localStorage.getItem("lastScore"))
     : "";
-  showLastScore();
+  renderLastScore();
   fetchQuestions();
 });
 
@@ -128,6 +222,6 @@ document.addEventListener("DOMContentLoaded", function () {
 //   lastScore = localStorage.getItem("lastScore")
 //     ? parseInt(localStorage.getItem("lastScore"))
 //     : 0;
-//   showLastScore();
+//   renderLastScore();
 //   fetchQuestions();
 // });
