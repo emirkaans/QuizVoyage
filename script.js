@@ -57,7 +57,7 @@ function renderQuestion() {
       questions[currentQuestion].correct_answer,
     ];
 
-    // shuffleArray(choices);
+    shuffleArray(choices);
     renderChoices(choices);
   }
 }
