@@ -123,33 +123,28 @@ function renderAnswers(answers) {
     answerElement.id = "answer";
 
     // Conditional Rendering by Correctness
-    if (answer.answer === answer.question.correct_answer) {
-      const html = `
-      <span>
-        <b>${i + 1}.</b> ${removeCharacters(answer.question.question)}
-      </span>
-      <span> <b id="correct-answer"> ✅ ${answer.answer} </b> 
-      </span>
-      `;
-      answerElement.innerHTML = html;
-    }
-
-    if (answer.answer !== answer.question.correct_answer) {
-      const html = `
-      <span>
-        <b>${i + 1}.</b> ${removeCharacters(answer.question.question)}
-      </span>
+    const html =
+      answer.answer === removeCharacters(answer.question.correct_answer)
+        ? `
     <span>
-     <b id="wrong-answer"> ❌ ${
-       answer.answer
-     } </b>   / <b id="correct-answer"> ✅ ${answer.question.correct_answer} 
-        </b>  
+      <b>${i + 1}.</b> ${removeCharacters(answer.question.question)}
     </span>
-      `;
+    <span> <b id="correct-answer"> ✅ ${answer.answer} </b> 
+    </span>
+    `
+        : `
+    <span>
+      <b>${i + 1}.</b> ${removeCharacters(answer.question.question)}
+    </span>
+  <span>
+   <b id="wrong-answer"> ❌ ${
+     answer.answer
+   } </b>   / <b id="correct-answer"> ✅ ${answer.question.correct_answer} 
+      </b>  
+  </span>
+    `;
 
-      answerElement.innerHTML = html;
-    }
-
+    answerElement.innerHTML = html;
     answersContainer.appendChild(answerElement);
   });
 }
@@ -174,10 +169,10 @@ function init() {
   // Clear Previous Answers
   answersContainer.innerHTML = "";
 
+  // Reset DOM
   renderLastScore();
   fetchQuestions();
 
-  // Reset DOM
   btnTryAgain.style.display = "none";
   questionContainer.style.display = "block";
   resultContainer.style.display = "none";
@@ -204,7 +199,6 @@ function shuffleArray(arr) {
 }
 
 // Event Listeners
-
 btnTryAgain.addEventListener("click", init);
 
 // DOM Content Loaded - JavaScript
