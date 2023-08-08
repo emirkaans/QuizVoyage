@@ -2,7 +2,7 @@
 
 QuizVoyage is a quiz application created using HTML, CSS, and JavaScript.
 
-![QuizVoyage Screenshot](screenshot.png)
+![QuizVoyage Screenshot](screenshot1.png)
 
 ## Features
 
